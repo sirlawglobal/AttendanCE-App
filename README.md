@@ -21,9 +21,11 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Attendance App
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is the backend repository for the Attendance App, built with [NestJS](https://github.com/nestjs/nest) and MongoDB.
+
+🚀 **Live API / Application:** [https://attendance-app-nlzt.onrender.com/](https://attendance-app-nlzt.onrender.com/)
 
 ## Project setup
 
