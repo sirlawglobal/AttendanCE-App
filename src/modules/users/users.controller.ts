@@ -22,6 +22,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { BulkUpdateWorkHoursDto } from './dto/bulk-update-work-hours.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -64,6 +65,13 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found' })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Patch('work-hours')
+  @ApiOperation({ summary: 'Update work hours for all staff members at once (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Work hours updated successfully for all staff' })
+  updateAllHours(@Body() bulkDto: BulkUpdateWorkHoursDto) {
+    return this.usersService.updateAllWorkHours(bulkDto.workStartTime, bulkDto.workEndTime);
   }
 
   @Patch(':id')

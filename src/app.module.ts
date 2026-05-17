@@ -10,6 +10,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ProfileModule } from './modules/profile/profile.module';
     NotificationsModule,
     ReportsModule,
     ProfileModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

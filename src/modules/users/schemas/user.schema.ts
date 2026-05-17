@@ -31,6 +31,14 @@ export class User {
   @ApiProperty({ example: true })
   @Prop({ default: true })
   isActive: boolean;
+
+  @ApiProperty({ example: '09:00', description: 'Work start time in HH:mm format' })
+  @Prop({ default: '09:00', trim: true })
+  workStartTime: string;
+
+  @ApiProperty({ example: '17:00', description: 'Work end time in HH:mm format' })
+  @Prop({ default: '17:00', trim: true })
+  workEndTime: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

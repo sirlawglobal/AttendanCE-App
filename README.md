@@ -27,6 +27,42 @@ This is the backend repository for the Attendance App, built with [NestJS](https
 
 🚀 **Live API / Application:** [https://attendance-app-nlzt.onrender.com/](https://attendance-app-nlzt.onrender.com/)
 
+---
+
+## ✨ Features & Dynamic Shift Updates (New)
+
+We have recently evolved the backend architecture with **dynamic global rules**, **per-staff schedules**, and **advanced network restriction features**:
+
+### 📅 Customizable Staff Work Hours
+Admin can set personalized shifts for each staff member (e.g. 8:00 AM - 4:00 PM, or 9:00 AM - 5:00 PM) instead of using hardcoded global start times. Lateness calculations during **Check-in** automatically adjust based on each employee's custom shift hours (+ 30-minute grace period).
+
+### 🌐 Mobile App Security (SSID Lock)
+Staff logins can be restricted to a specific named Wi-Fi network (SSID). If the Admin configures a required office Wi-Fi name in the settings, the mobile app must send the correct `wifiSsid` in the login payload, or access will be blocked.
+
+### ⚙️ Live Settings Controller (Dynamic Timezones & Wi-Fi)
+Admins can dynamically alter both the required office Wi-Fi name and the active server timezone from the dashboard at runtime. Timezone changes are instantly applied to the live Node process without restarting the server.
+
+---
+
+## 🛠️ Newly Added & Updated APIs
+
+### 1. Settings Management (Admin Only)
+* **`GET /api/settings`**: Fetch active settings (current timezone & required Wi-Fi name).
+* **`PATCH /api/settings`**: Dynamically modify the required Wi-Fi name or server timezone.
+  * **Payload:** `{"officeWifiSsid": "MyOfficeWiFi", "timezone": "Africa/Lagos"}`
+
+### 2. User & Shift Management (Admin Only)
+* **`PATCH /api/users/work-hours`**: Bulk-update work hours for **all** registered staff in a single action.
+  * **Payload:** `{"workStartTime": "08:00", "workEndTime": "16:00"}`
+* **`POST /api/users` & `PATCH /api/users/:id`**: Set or update custom work hours individually.
+  * **Payload:** `{"workStartTime": "08:00", "workEndTime": "16:00"}`
+
+### 3. Login Security (Public)
+* **`POST /api/auth/login`**: Accepts `wifiSsid` to restrict staff login to the office network.
+  * **Payload:** `{"email": "...", "password": "...", "wifiSsid": "MyOfficeWiFi"}`
+
+---
+
 ## Project setup
 
 ```bash

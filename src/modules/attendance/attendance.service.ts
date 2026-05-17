@@ -6,26 +6,37 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Attendance, AttendanceDocument, AttendanceStatus } from './schemas/attendance.schema';
-
-const LATE_THRESHOLD_HOUR = 9;
-const LATE_THRESHOLD_MINUTE = 30;
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectModel(Attendance.name) private attendanceModel: Model<AttendanceDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   private getTodayDate(): string {
     return new Date().toISOString().split('T')[0];
   }
 
-  private getStatus(checkInTime: Date): AttendanceStatus {
+  private getStatus(checkInTime: Date, workStartTime: string = '09:00'): AttendanceStatus {
+    const [startHour, startMinute] = workStartTime.split(':').map(Number);
+    // Add 30 minutes grace period
+    const graceMinutes = 30;
+    
+    let thresholdHour = startHour;
+    let thresholdMinute = startMinute + graceMinutes;
+    if (thresholdMinute >= 60) {
+      thresholdHour += 1;
+      thresholdMinute -= 60;
+    }
+
     const hour = checkInTime.getHours();
     const minute = checkInTime.getMinutes();
+    
     if (
-      hour > LATE_THRESHOLD_HOUR ||
-      (hour === LATE_THRESHOLD_HOUR && minute > LATE_THRESHOLD_MINUTE)
+      hour > thresholdHour ||
+      (hour === thresholdHour && minute > thresholdMinute)
     ) {
       return AttendanceStatus.LATE;
     }
@@ -33,6 +44,11 @@ export class AttendanceService {
   }
 
   async checkIn(userId: string): Promise<Attendance> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const today = this.getTodayDate();
 
     const existing = await this.attendanceModel.findOne({
@@ -45,7 +61,7 @@ export class AttendanceService {
     }
 
     const checkInTime = new Date();
-    const status = this.getStatus(checkInTime);
+    const status = this.getStatus(checkInTime, user.workStartTime);
 
     const attendance = new this.attendanceModel({
       userId: new Types.ObjectId(userId),

@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Role } from '../../common/enums/role.enum';
 
 export interface PaginatedResult<T> {
   data: T[];
@@ -104,5 +105,13 @@ export class UsersService {
       .lean();
     if (!user) throw new NotFoundException('User not found');
     return user;
+  }
+
+  async updateAllWorkHours(workStartTime: string, workEndTime: string) {
+    await this.userModel.updateMany(
+      { role: Role.STAFF },
+      { $set: { workStartTime, workEndTime } },
+    );
+    return { message: 'Work hours updated successfully for all staff members' };
   }
 }
